@@ -14,22 +14,31 @@ export class CdkIntroMarciaylanubeStack extends cdk.Stack {
     //dynamoDB
     const gettingsTable = new dynamoDB.Table(this,getDefaultResourseName(props,"hello"),{
       partitionKey:{ name:"id", type:dynamoDB.AttributeType.STRING },
-      tableName:"hello"
     });
     
     
     //lambda function
     const saveHelloFunction = new lambda.Function(this,getDefaultResourseName(props,"SaveHelloFunction"),{
       runtime:lambda.Runtime.NODEJS_16_X, //corre en node16
-      handler:"index.saveHello", 
+      handler:"store.saveHello", 
       code:lambda.Code.fromAsset(path.resolve(__dirname,"lambda")), //donde esta alojado el codigo eje: s3,o el mismo prohyecto en la carpeta code
       environment:{
-        GEETINGS_TABLE: dynamoDB.Table.name
+        GEETINGS_TABLE: gettingsTable.tableName
+      }
+    });
+
+    const getHelloFunction = new lambda.Function(this,getDefaultResourseName(props,"GetHelloFunction"),{
+      runtime:lambda.Runtime.NODEJS_16_X, //corre en node16
+      handler:"get.getHello", 
+      code:lambda.Code.fromAsset(path.resolve(__dirname,"lambda")), //donde esta alojado el codigo eje: s3,o el mismo prohyecto en la carpeta code
+      environment:{
+        GEETINGS_TABLE: gettingsTable.tableName
       }
     });
 
     //permisos para que lambda se conecte a dynamo
-    gettingsTable.grantReadWriteData(saveHelloFunction); //permisos a la lambda
+    gettingsTable.grantWriteData(saveHelloFunction); //permisos a la lambda
+    gettingsTable.grantReadData(getHelloFunction); //permisos a la lambda
 
 
     //creamos el apiGateway
@@ -41,6 +50,6 @@ export class CdkIntroMarciaylanubeStack extends cdk.Stack {
 
     gateway.root
     .resourceForPath('hello')
-    .addMethod("GET", new apiGW.LambdaIntegration(saveHelloFunction))
+    .addMethod("GET", new apiGW.LambdaIntegration(getHelloFunction))
   }
 }

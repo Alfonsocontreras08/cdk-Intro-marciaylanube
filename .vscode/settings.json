@@ -2,7 +2,7 @@
     "serverlessConsole.services": [
         {
             "type": "cloudformation",
-            "title": "cdk",
+            "title": "intro",
             "timeOffsetInMs": 0,
             "awsProfile": "items-training",
             "stacks": [
