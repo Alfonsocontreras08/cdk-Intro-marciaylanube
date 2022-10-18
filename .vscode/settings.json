@@ -1,0 +1,19 @@
+{
+    "serverlessConsole.services": [
+        {
+            "type": "cloudformation",
+            "title": "cdk",
+            "timeOffsetInMs": 0,
+            "awsProfile": "items-training",
+            "stacks": [
+                {
+                    "region": "us-east-1",
+                    "stackName": "cdk-intro",
+                    "stage": "dev"
+                }
+            ]
+        }
+    ],
+    "serverlessConsole.autoRefreshInterval": 5000,
+    "serverlessConsole.groupPerRequest": true
+}
